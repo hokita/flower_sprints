@@ -2,11 +2,22 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
+import SprintNew from './SprintNew'
 import reportWebVitals from './reportWebVitals'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <Switch>
+        <Route exact path="/">
+          <App />
+        </Route>
+        <Route exact path="/sprints/new/">
+          <SprintNew />
+        </Route>
+      </Switch>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 )

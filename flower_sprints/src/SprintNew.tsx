@@ -3,22 +3,31 @@ import NavButton from './NavButton'
 
 const SprintNew: React.FC = () => {
   const [taskCount, setTaskCount] = useState(0)
+  const [deadline, setDeadline] = useState('')
 
   const handleChangeTaskCount = (e: React.FormEvent<HTMLSelectElement>) => {
     const target = e.target as HTMLSelectElement
     setTaskCount(parseInt(target.value))
   }
 
+  const handleChangeDeadline = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDeadline(e.target.value)
+  }
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+  }
+
   return (
-    <div>
+    <div className="text-center">
       <h1 className="text-4xl py-1">Settings Plan</h1>
-      <form className="px-8 pt-6 pb-8 mb-4">
+      <form className="px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
         <div className="mb-4">
           <label
-            className="block text-gray-700 text-sm font-bold mb-2"
+            className="block text-gray-700 text-sm font-bold mb-5"
             htmlFor="username"
           >
-            Username
+            How many?
             <select
               className="form-select mt-1 block w-full"
               id="taskCount"
@@ -37,6 +46,21 @@ const SprintNew: React.FC = () => {
               <option value="10">10</option>
             </select>
           </label>
+          <label
+            className="block text-gray-700 text-sm font-bold mb-5"
+            htmlFor="username"
+          >
+            Deadline?
+            <input
+              type="date"
+              className="form-select mt-1 block w-full"
+              value={deadline}
+              onChange={handleChangeDeadline}
+            />
+          </label>
+          <button className="rounded font-bold bg-gray-200 py-2 px-4 ">
+            save
+          </button>
         </div>
       </form>
       <nav className="fixed bottom-0 inset-x-0 bg-gray-300 flex justify-between uppercase">

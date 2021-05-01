@@ -4,21 +4,23 @@ import NavButton from './NavButton'
 const App: React.FC = () => {
   return (
     <div className="text-center">
-      <h1 className="text-4xl py-1">Flower Sprints</h1>
-      <div className="py-10">
-        <TaskIcon isDone={false} />
-        <TaskIcon isDone={false} />
-        <TaskIcon isDone={false} />
-        <TaskIcon isDone={false} />
-        <TaskIcon isDone={false} />
+      <h1 className="text-4xl mb-10">Flower Sprints</h1>
+      <div>
+        <div className="pb-10">
+          <TaskIcon isDone={false} />
+          <TaskIcon isDone={false} />
+          <TaskIcon isDone={false} />
+          <TaskIcon isDone={false} />
+          <TaskIcon isDone={false} />
+        </div>
+        <p>0 / 5 tasks</p>
+        <p>1.5 tasks per day</p>
+        <p>4 days remaining</p>
+        <nav className="fixed bottom-0 inset-x-0 bg-gray-300 flex justify-between uppercase">
+          <NavButton name="home" link="/" />
+          <NavButton name="settings" link="/sprints/new" />
+        </nav>
       </div>
-      <p>0 / 5 tasks</p>
-      <p>1.5 tasks per day</p>
-      <p>4 days remaining</p>
-      <nav className="fixed bottom-0 inset-x-0 bg-gray-300 flex justify-between uppercase">
-        <NavButton name="home" link="/" />
-        <NavButton name="settings" link="/sprints/new" />
-      </nav>
     </div>
   )
 }
@@ -35,7 +37,7 @@ const TaskIcon: React.FC<TaskIconProps> = ({ isDone }) => {
   }
 
   let classNames = ['material-icons', 'md-48', 'md-dark']
-  if (value) {
+  if (!value) {
     classNames.push('md-inactive')
   }
 

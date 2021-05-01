@@ -37,7 +37,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 // Sprint struct
 type Sprint struct {
-	Deadline time.Time `json:"date"`
+	Deadline time.Time `json:"deadline"`
 	Tasks    Tasks     `json:"tasks"`
 }
 

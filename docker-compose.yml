@@ -2,6 +2,15 @@
 version: '3'
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/go/Dockerfile
+    command: sh -c "go run main.go"
+    volumes:
+      - ./backend:/go
+    ports:
+      - "8081:8081"
   front:
     build:
       context: .

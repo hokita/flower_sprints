@@ -1,0 +1,15 @@
+---
+version: '3'
+
+services:
+  front:
+    build:
+      context: .
+      dockerfile: ./docker/node/Dockerfile
+    volumes:
+      - ./front:/usr/src/app
+      - /usr/src/app/.yarn
+    stdin_open: true
+    ports:
+      - "8080:3000"
+    command: sh -c "yarn start"

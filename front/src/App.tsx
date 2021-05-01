@@ -35,7 +35,7 @@ const App: React.FC = () => {
   const remainingDays = (): number => {
     const today = new Date()
     const days = deadline
-      ? Math.floor(
+      ? Math.round(
           (deadline.valueOf() - today.valueOf()) / (1000 * 60 * 60 * 24)
         )
       : 0

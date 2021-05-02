@@ -1,9 +1,13 @@
 import React, { useState } from 'react'
 import NavButton from './NavButton'
+import axios from 'axios'
 
 const SprintNew: React.FC = () => {
   const [taskCount, setTaskCount] = useState(0)
   const [deadline, setDeadline] = useState('')
+  const [saved, setSaved] = useState(false)
+
+  const apiURL = 'http://localhost:8081/sprints/'
 
   const handleChangeTaskCount = (e: React.FormEvent<HTMLSelectElement>) => {
     const target = e.target as HTMLSelectElement
@@ -15,8 +19,17 @@ const SprintNew: React.FC = () => {
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    axios.post(apiURL, null).then(() => {
+      setSaved(true)
+      setTimeout(() => {
+        setSaved(false)
+      }, 5000)
+    })
     e.preventDefault()
   }
+
+  const message = () =>
+    saved ? <p className="text-gray-500">Saved Successful!</p> : <></>
 
   return (
     <div className="text-center">
@@ -61,6 +74,7 @@ const SprintNew: React.FC = () => {
           <button className="rounded font-bold bg-gray-200 py-2 px-4 ">
             save
           </button>
+          {message()}
         </div>
       </form>
       <nav className="fixed bottom-0 inset-x-0 bg-gray-300 flex justify-between uppercase">

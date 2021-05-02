@@ -11,7 +11,9 @@ import (
 
 func main() {
 	r := mux.NewRouter()
+	r.StrictSlash(true)
 	r.HandleFunc("/", HomeHandler).Methods(http.MethodGet)
+	r.HandleFunc("/sprints/", CreateSprintHandler).Methods(http.MethodPost)
 
 	fmt.Println("Start Server")
 	if err := http.ListenAndServe(":8081", r); err != nil {
@@ -33,6 +35,19 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(sprint); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+}
+
+// CreateSprintHandler func
+func CreateSprintHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	if r.Method == http.MethodOptions {
+		w.Header().Set("Access-Control-Allow-Methods", "POST")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Max-Age", "3600")
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
 // Sprint struct

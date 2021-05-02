@@ -7,9 +7,17 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func main() {
+	dns := "host=db user=app dbname=flower_sprints password=password sslmode=disable"
+	_, err := gorm.Open(postgres.Open(dns), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+
 	r := mux.NewRouter()
 	r.StrictSlash(true)
 	r.HandleFunc("/", HomeHandler).Methods(http.MethodGet)

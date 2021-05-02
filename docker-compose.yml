@@ -11,6 +11,8 @@ services:
       - ./backend:/go
     ports:
       - "8081:8081"
+    depends_on:
+      - db
   front:
     build:
       context: .
@@ -22,3 +24,16 @@ services:
     ports:
       - "8080:3000"
     command: sh -c "yarn start"
+  db:
+    build:
+      context: .
+      dockerfile: ./docker/postgres/Dockerfile
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: flower_sprints
+      PGTZ: Asia/Tokyo
+    volumes:
+      - db-data:/var/lib/postgresql/data
+volumes:
+  db-data:

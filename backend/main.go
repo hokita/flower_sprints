@@ -22,7 +22,7 @@ func main() {
 	r.StrictSlash(true)
 	r.HandleFunc("/", HomeHandler).Methods(http.MethodGet)
 	r.HandleFunc("/sprints/", CreateSprintHandler).Methods(http.MethodPost)
-	r.HandleFunc("/sprints/{sprint_id:[0-9]+}/tasks/{task_id:[0-9]+}/", UpdateTaskHandler).Methods(http.MethodPut)
+	r.HandleFunc("/sprints/{sprint_id:[0-9]+}/tasks/{task_id:[0-9]+}/", UpdateTaskHandler).Methods(http.MethodPut, http.MethodOptions)
 
 	fmt.Println("Start Server")
 	if err := http.ListenAndServe(":8081", r); err != nil {

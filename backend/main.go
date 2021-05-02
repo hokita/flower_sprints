@@ -13,16 +13,16 @@ import (
 
 func main() {
 	dns := "host=db user=app dbname=flower_sprints password=password sslmode=disable"
-	_, err := gorm.Open(postgres.Open(dns), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dns), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
 
 	r := mux.NewRouter()
 	r.StrictSlash(true)
-	r.HandleFunc("/", HomeHandler).Methods(http.MethodGet)
-	r.HandleFunc("/sprints/", CreateSprintHandler).Methods(http.MethodPost)
-	r.HandleFunc("/sprints/{sprint_id:[0-9]+}/tasks/{task_id:[0-9]+}/", UpdateTaskHandler).Methods(http.MethodPut, http.MethodOptions)
+	r.Handle("/", &HomeHandler{db}).Methods(http.MethodGet)
+	r.Handle("/sprints/", &CreateSprintHandler{db}).Methods(http.MethodPost)
+	r.Handle("/sprints/{sprint_id:[0-9]+}/tasks/{task_id:[0-9]+}/", &UpdateTaskHandler{db}).Methods(http.MethodPut, http.MethodOptions)
 
 	fmt.Println("Start Server")
 	if err := http.ListenAndServe(":8081", r); err != nil {
@@ -31,7 +31,11 @@ func main() {
 }
 
 // HomeHandler func
-func HomeHandler(w http.ResponseWriter, r *http.Request) {
+type HomeHandler struct {
+	DB *gorm.DB
+}
+
+func (*HomeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	task1 := Task{Done: true}
 	task2 := Task{Done: false}
 	task3 := Task{Done: false}
@@ -47,7 +51,12 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // CreateSprintHandler func
-func CreateSprintHandler(w http.ResponseWriter, r *http.Request) {
+type CreateSprintHandler struct {
+	DB *gorm.DB
+}
+
+// CreateSprintHandler func
+func (*CreateSprintHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if r.Method == http.MethodOptions {
 		w.Header().Set("Access-Control-Allow-Methods", "POST")
@@ -60,7 +69,12 @@ func CreateSprintHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // UpdateTaskHandler func
-func UpdateTaskHandler(w http.ResponseWriter, r *http.Request) {
+type UpdateTaskHandler struct {
+	DB *gorm.DB
+}
+
+// UpdateTaskHandler func
+func (*UpdateTaskHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if r.Method == http.MethodOptions {
 		w.Header().Set("Access-Control-Allow-Methods", "PUT")

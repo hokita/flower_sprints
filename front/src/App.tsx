@@ -14,6 +14,7 @@ const App: React.FC = () => {
   }, [])
 
   const apiURL = 'http://localhost:8081'
+  const apiPutURL = 'http://localhost:8081/sprints/123/tasks/234/'
 
   const fetchData = async () => {
     const result = await axios.get(apiURL)
@@ -26,6 +27,8 @@ const App: React.FC = () => {
   }
 
   const handleClickTaskIcon = (index: number) => {
+    axios.put(apiPutURL, null).then(() => {})
+
     const newTasks: { done: boolean }[] = [...tasks]
     newTasks[index].done = !newTasks[index].done
     setTasks(newTasks)

@@ -14,6 +14,7 @@ func main() {
 	r.StrictSlash(true)
 	r.HandleFunc("/", HomeHandler).Methods(http.MethodGet)
 	r.HandleFunc("/sprints/", CreateSprintHandler).Methods(http.MethodPost)
+	r.HandleFunc("/sprints/{sprint_id:[0-9]+}/tasks/{task_id:[0-9]+}/", UpdateTaskHandler).Methods(http.MethodPut)
 
 	fmt.Println("Start Server")
 	if err := http.ListenAndServe(":8081", r); err != nil {
@@ -42,6 +43,19 @@ func CreateSprintHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if r.Method == http.MethodOptions {
 		w.Header().Set("Access-Control-Allow-Methods", "POST")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Max-Age", "3600")
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+// UpdateTaskHandler func
+func UpdateTaskHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	if r.Method == http.MethodOptions {
+		w.Header().Set("Access-Control-Allow-Methods", "PUT")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		w.Header().Set("Access-Control-Max-Age", "3600")
 		w.WriteHeader(http.StatusNoContent)

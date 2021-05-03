@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState, useEffect } from 'react'
 import NavButton from './NavButton'
 import axios from 'axios'
 
@@ -6,6 +6,15 @@ const SprintNew: React.FC = () => {
   const [taskCount, setTaskCount] = useState(0)
   const [deadline, setDeadline] = useState('')
   const [saved, setSaved] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSaved(false)
+    }, 5000)
+    return (): void => {
+      clearTimeout(timer)
+    }
+  }, [saved])
 
   const apiURL = 'http://localhost:8081/sprints/'
 
@@ -22,9 +31,6 @@ const SprintNew: React.FC = () => {
     const params = JSON.stringify({ count: taskCount, deadline })
     axios.post(apiURL, params).then(() => {
       setSaved(true)
-      setTimeout(() => {
-        setSaved(false)
-      }, 5000)
     })
     e.preventDefault()
   }

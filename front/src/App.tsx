@@ -23,19 +23,21 @@ const App: React.FC = () => {
   const [sprint, setSprint] = useState<Sprint>()
   const [doneTaskCount, setDoneTaskCount] = useState(0)
 
+  const apiURL = 'http://localhost:8081'
+  const apiPutURL = 'http://localhost:8081/sprints/123/tasks/234/'
+
   useEffect(() => {
     fetchData()
   }, [])
 
-  const apiURL = 'http://localhost:8081'
-  const apiPutURL = 'http://localhost:8081/sprints/123/tasks/234/'
-
   const fetchData = async () => {
     const result = await axios.get(apiURL)
 
-    const newSprint: Sprint = result.data
-    setSprint(newSprint)
-    setDoneTaskCount(newSprint.tasks.filter((task) => task.done).length)
+    if (result.data) {
+      const newSprint: Sprint = result.data
+      setSprint(newSprint)
+      setDoneTaskCount(newSprint.tasks.filter((task) => task.done).length)
+    }
   }
 
   const handleClickTaskIcon = (index: number) => {

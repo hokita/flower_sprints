@@ -131,8 +131,8 @@ type Tasks []Task
 
 // Task struct
 type Task struct {
-	ID        int `json:"id"`
-	SprintID  int
+	ID        int       `json:"id"`
+	SprintID  int       `json:"sprint_id"`
 	Done      bool      `json:"done"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`

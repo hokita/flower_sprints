@@ -3,11 +3,25 @@ import NavButton from './NavButton'
 import TaskIcon from './TaskIcon'
 import axios from 'axios'
 
+interface Sprint {
+  id: number
+  deadline: Date
+  created_at: Date
+  updated_at: Date
+  tasks: Task[]
+}
+
+interface Task {
+  id: number
+  sprint_id: number
+  done: boolean
+  created_at: Date
+  updated_at: Date
+}
+
 const App: React.FC = () => {
-  const [tasks, setTasks] = useState<{ done: boolean }[]>([])
-  const [taskCount, setTaskCount] = useState(0)
+  const [sprint, setSprint] = useState<Sprint>()
   const [doneTaskCount, setDoneTaskCount] = useState(0)
-  const [deadline, setDeadline] = useState<Date>()
 
   useEffect(() => {
     fetchData()
@@ -19,24 +33,26 @@ const App: React.FC = () => {
   const fetchData = async () => {
     const result = await axios.get(apiURL)
 
-    const newTasks: { done: boolean }[] = result.data.tasks
-    setDeadline(new Date(result.data.deadline))
-    setDoneTaskCount(newTasks.filter((task) => task.done).length)
-    setTasks(newTasks)
-    setTaskCount(newTasks.length)
+    const newSprint: Sprint = result.data
+    setSprint(newSprint)
+    setDoneTaskCount(newSprint.tasks.filter((task) => task.done).length)
   }
 
   const handleClickTaskIcon = (index: number) => {
-    axios.put(apiPutURL, null).then(() => {})
+    if (!sprint) return
 
-    const newTasks: { done: boolean }[] = [...tasks]
-    newTasks[index].done = !newTasks[index].done
-    setTasks(newTasks)
-    setDoneTaskCount(newTasks.filter((task) => task.done).length)
+    axios.put(apiPutURL, null).then(() => {})
+    const newSprint: Sprint = sprint
+    newSprint.tasks[index].done = !newSprint.tasks[index].done
+    setSprint(newSprint)
+    setDoneTaskCount(newSprint.tasks.filter((task) => task.done).length)
   }
 
   const remainingDays = (): number => {
+    if (!sprint) return 0
+
     const today = new Date()
+    const deadline = new Date(sprint.deadline)
     const days = deadline
       ? Math.round(
           (deadline.valueOf() - today.valueOf()) / (1000 * 60 * 60 * 24)
@@ -47,16 +63,18 @@ const App: React.FC = () => {
   }
 
   const taskCountPerDay = (): number => {
-    const remainingTaskCount = taskCount - doneTaskCount
+    if (!sprint) return 0
+
+    const remainingTaskCount = sprint.tasks.length - doneTaskCount
     return Math.round((remainingTaskCount / remainingDays()) * 10) / 10
   }
 
-  return (
+  return sprint ? (
     <div className="text-center">
       <h1 className="text-4xl mb-10">Flower Sprints</h1>
       <div>
         <div className="pb-10">
-          {tasks.map((task: { done: boolean }, index) => (
+          {sprint.tasks.map((task: { done: boolean }, index) => (
             <TaskIcon
               key={index}
               isDone={task.done}
@@ -65,7 +83,7 @@ const App: React.FC = () => {
           ))}
         </div>
         <p>
-          {doneTaskCount} / {taskCount} tasks
+          {doneTaskCount} / {sprint.tasks.length} tasks
         </p>
         <p>{taskCountPerDay()} tasks per day</p>
         <p>{remainingDays()} days remaining</p>
@@ -75,6 +93,8 @@ const App: React.FC = () => {
         </nav>
       </div>
     </div>
+  ) : (
+    <div>Please register new sprint.</div>
   )
 }
 

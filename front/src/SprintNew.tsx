@@ -19,7 +19,8 @@ const SprintNew: React.FC = () => {
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    axios.post(apiURL, null).then(() => {
+    const params = JSON.stringify({ count: taskCount, deadline })
+    axios.post(apiURL, params).then(() => {
       setSaved(true)
       setTimeout(() => {
         setSaved(false)

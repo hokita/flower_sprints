@@ -56,7 +56,7 @@ type CreateSprintHandler struct {
 }
 
 // CreateSprintHandler func
-func (*CreateSprintHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *CreateSprintHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if r.Method == http.MethodOptions {
 		w.Header().Set("Access-Control-Allow-Methods", "POST")
@@ -65,6 +65,38 @@ func (*CreateSprintHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
+
+	var params struct {
+		Count    int    `json:"count"`
+		Deadline string `json:"deadline"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	jst, _ := time.LoadLocation("Asia/Tokyo")
+	deadline, err := time.ParseInLocation("2006-01-02", params.Deadline, jst)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var tasks Tasks
+	for i := 0; i < params.Count; i++ {
+		tasks = append(tasks, Task{Done: false})
+	}
+	sprint := Sprint{
+		Deadline: deadline,
+		Tasks:    tasks,
+	}
+	result := h.DB.Create(&sprint)
+	if result.Error != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -88,8 +120,11 @@ func (*UpdateTaskHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // Sprint struct
 type Sprint struct {
-	Deadline time.Time `json:"deadline"`
-	Tasks    Tasks     `json:"tasks"`
+	ID        int       `json:"id"`
+	Deadline  time.Time `json:"deadline"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Tasks     Tasks     `json:"tasks"`
 }
 
 // Tasks Array
@@ -97,5 +132,9 @@ type Tasks []Task
 
 // Task struct
 type Task struct {
-	Done bool `json:"done"`
+	ID        int `json:"id"`
+	SprintID  int
+	Done      bool      `json:"done"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }

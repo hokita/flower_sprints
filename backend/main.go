@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -36,14 +37,19 @@ type HomeHandler struct {
 }
 
 func (h *HomeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	var sprint Sprint
 	result := h.DB.Preload("Tasks").Where("deadline > ?", time.Now()).Last(&sprint)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return
+	}
+
 	if result.Error != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if err := json.NewEncoder(w).Encode(sprint); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}

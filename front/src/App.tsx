@@ -89,12 +89,18 @@ const App: React.FC = () => {
         <p>{remainingDays()} days remaining</p>
         <nav className="fixed bottom-0 inset-x-0 bg-gray-300 flex justify-between uppercase">
           <NavButton name="home" link="/" />
-          <NavButton name="settings" link="/sprints/new" />
         </nav>
       </div>
     </div>
   ) : (
-    <div>Please register new sprint.</div>
+    <div className="text-center">
+      <h1 className="text-4xl mb-10">Flower Sprints</h1>
+      <div>Please register new sprint.</div>
+      <nav className="fixed bottom-0 inset-x-0 bg-gray-300 flex justify-between uppercase">
+        <NavButton name="home" link="/" />
+        <NavButton name="settings" link="/sprints/new" />
+      </nav>
+    </div>
   )
 }
 

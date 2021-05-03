@@ -35,13 +35,12 @@ type HomeHandler struct {
 	DB *gorm.DB
 }
 
-func (*HomeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	task1 := Task{Done: true}
-	task2 := Task{Done: false}
-	task3 := Task{Done: false}
-	sprint := Sprint{
-		Deadline: time.Now().AddDate(0, 0, 5),
-		Tasks:    Tasks{task1, task2, task3},
+func (h *HomeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	var sprint Sprint
+	result := h.DB.Preload("Tasks").Where("deadline > ?", time.Now()).Last(&sprint)
+	if result.Error != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")

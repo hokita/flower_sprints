@@ -23,7 +23,7 @@ const App: React.FC = () => {
   const [sprint, setSprint] = useState<Sprint>()
   const [doneTaskCount, setDoneTaskCount] = useState(0)
 
-  const apiURL = `http://${process.env.REACT_APP_API_DOMAIN}:8081/`
+  const apiURL = `http://${process.env.REACT_APP_API_DOMAIN}/`
 
   useEffect(() => {
     const fetchData = async () => {

@@ -16,7 +16,7 @@ const SprintNew: React.FC = () => {
     }
   }, [saved])
 
-  const apiURL = 'http://localhost:8081/sprints/'
+  const apiURL = `http://${process.env.REACT_APP_API_DOMAIN}/sprints/`
 
   const handleChangeTaskCount = (e: React.FormEvent<HTMLSelectElement>) => {
     const target = e.target as HTMLSelectElement

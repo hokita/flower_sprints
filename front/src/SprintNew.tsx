@@ -3,7 +3,7 @@ import NavButton from './NavButton'
 import axios from 'axios'
 
 const SprintNew: React.FC = () => {
-  const [taskCount, setTaskCount] = useState(0)
+  const [taskCount, setTaskCount] = useState(1)
   const [deadline, setDeadline] = useState('')
   const [saved, setSaved] = useState(false)
 

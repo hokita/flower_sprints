@@ -23,8 +23,7 @@ const App: React.FC = () => {
   const [sprint, setSprint] = useState<Sprint>()
   const [doneTaskCount, setDoneTaskCount] = useState(0)
 
-  const apiURL = 'http://localhost:8081'
-  const apiPutURL = 'http://localhost:8081/sprints/123/tasks/234/'
+  const apiURL = 'http://localhost:8081/'
 
   useEffect(() => {
     fetchData()
@@ -43,11 +42,15 @@ const App: React.FC = () => {
   const handleClickTaskIcon = (index: number) => {
     if (!sprint) return
 
-    axios.put(apiPutURL, null).then(() => {})
     const newSprint: Sprint = sprint
-    newSprint.tasks[index].done = !newSprint.tasks[index].done
+    const newIsDone = !newSprint.tasks[index].done
+
+    newSprint.tasks[index].done = newIsDone
     setSprint(newSprint)
     setDoneTaskCount(newSprint.tasks.filter((task) => task.done).length)
+
+    const url = `${apiURL}sprints/${sprint.id}/tasks/${newSprint.tasks[index].id}/`
+    axios.put(url, JSON.stringify({ done: newIsDone })).then(() => {})
   }
 
   const remainingDays = (): number => {
@@ -71,14 +74,25 @@ const App: React.FC = () => {
     return Math.round((remainingTaskCount / remainingDays()) * 10) / 10
   }
 
+  const compare = (a: Task, b: Task) => {
+    // Use toUpperCase() to ignore character casing
+    let comparison = 0
+    if (a.id > b.id) {
+      comparison = 1
+    } else if (a.id < b.id) {
+      comparison = -1
+    }
+    return comparison
+  }
+
   return sprint ? (
     <div className="text-center">
       <h1 className="text-4xl mb-10">Flower Sprints</h1>
       <div>
         <div className="pb-10">
-          {sprint.tasks.map((task: { done: boolean }, index) => (
+          {sprint.tasks.sort(compare).map((task: Task, index) => (
             <TaskIcon
-              key={index}
+              key={task.id}
               isDone={task.done}
               onClick={() => handleClickTaskIcon(index)}
             />

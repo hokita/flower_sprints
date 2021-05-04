@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -111,7 +112,7 @@ type UpdateTaskHandler struct {
 }
 
 // UpdateTaskHandler func
-func (*UpdateTaskHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *UpdateTaskHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if r.Method == http.MethodOptions {
 		w.Header().Set("Access-Control-Allow-Methods", "PUT")
@@ -120,6 +121,46 @@ func (*UpdateTaskHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
+
+	vars := mux.Vars(r)
+
+	sprintID, err := strconv.Atoi(vars["sprint_id"])
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
+	taskID, err := strconv.Atoi(vars["task_id"])
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
+	var params struct {
+		Done bool `json:"done"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var task Task
+	if result := h.DB.First(&task, taskID); result.Error != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if task.SprintID != sprintID {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	task.Done = params.Done
+	if result := h.DB.Save(&task); result.Error != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
 }
 

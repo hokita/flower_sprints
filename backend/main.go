@@ -13,8 +13,18 @@ import (
 	"gorm.io/gorm"
 )
 
+const location = "Asia/Tokyo"
+
+func init() {
+	loc, err := time.LoadLocation(location)
+	if err != nil {
+		loc = time.FixedZone(location, 9*60*60)
+	}
+	time.Local = loc
+}
+
 func main() {
-	dns := "host=db user=app dbname=flower_sprints password=password sslmode=disable"
+	dns := "host=db user=app dbname=flower_sprints password=password sslmode=disable TimeZone=Asia/Tokyo"
 	db, err := gorm.Open(postgres.Open(dns), &gorm.Config{})
 	if err != nil {
 		panic(err)
@@ -82,8 +92,7 @@ func (h *CreateSprintHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	jst, _ := time.LoadLocation("Asia/Tokyo")
-	deadline, err := time.ParseInLocation("2006-01-02", params.Deadline, jst)
+	deadline, err := time.Parse("2006-01-02", params.Deadline)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return

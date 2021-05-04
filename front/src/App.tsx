@@ -60,7 +60,7 @@ const App: React.FC = () => {
     const deadline = new Date(sprint.deadline)
     const days = deadline
       ? Math.round(
-          (deadline.valueOf() - today.valueOf()) / (1000 * 60 * 60 * 24)
+          (deadline.valueOf() - today.valueOf()) / (1000 * 60 * 60 * 24) + 1
         )
       : 0
 

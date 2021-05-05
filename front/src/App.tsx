@@ -24,6 +24,7 @@ interface Task {
 const App: React.FC = () => {
   const [sprint, setSprint] = useState<Sprint>()
   const [doneTaskCount, setDoneTaskCount] = useState(0)
+  const [isAllDone, setIsAllDone] = useState(false)
 
   const apiURL = `http://${process.env.REACT_APP_API_DOMAIN}/`
 
@@ -40,6 +41,10 @@ const App: React.FC = () => {
 
     fetchData()
   }, [apiURL])
+
+  useEffect(() => {
+    sprint && setIsAllDone(sprint.tasks.every((task) => task.done))
+  }, [sprint, doneTaskCount])
 
   const handleClickTaskIcon = (index: number) => {
     if (!sprint) return
@@ -87,6 +92,12 @@ const App: React.FC = () => {
     return comparison
   }
 
+  const allDoneMessage = isAllDone ? (
+    <p className="text-gray-500 text-2xl">Well Done!!</p>
+  ) : (
+    <></>
+  )
+
   return sprint ? (
     <div className="text-center">
       <Title>Flower Sprints</Title>
@@ -99,6 +110,7 @@ const App: React.FC = () => {
               onClick={() => handleClickTaskIcon(index)}
             />
           ))}
+          {allDoneMessage}
         </div>
         <p>
           {doneTaskCount} / {sprint.tasks.length} tasks

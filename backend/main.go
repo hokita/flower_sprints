@@ -51,7 +51,7 @@ func (h *HomeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	var sprint Sprint
-	result := h.DB.Preload("Tasks").Where("deadline > ?", time.Now()).Last(&sprint)
+	result := h.DB.Preload("Tasks").Where("deadline >= ?", time.Now()).Last(&sprint)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return
 	}

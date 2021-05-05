@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import Title from './Title'
+import Nav from './Nav'
 import NavButton from './NavButton'
 import axios from 'axios'
 
@@ -40,7 +42,7 @@ const SprintNew: React.FC = () => {
 
   return (
     <div className="text-center">
-      <h1 className="text-4xl py-1">Settings Plan</h1>
+      <Title>Settings Plan</Title>
       <form className="px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
         <div className="mb-4">
           <label
@@ -84,10 +86,10 @@ const SprintNew: React.FC = () => {
           {message()}
         </div>
       </form>
-      <nav className="fixed bottom-0 inset-x-0 bg-gray-300 flex justify-between uppercase">
+      <Nav>
         <NavButton name="home" link="/" />
         <NavButton name="settings" link="/sprints/new" />
-      </nav>
+      </Nav>
     </div>
   )
 }

@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import Title from './Title'
+import Nav from './Nav'
 import NavButton from './NavButton'
 import TaskIcon from './TaskIcon'
 import axios from 'axios'
@@ -87,7 +89,7 @@ const App: React.FC = () => {
 
   return sprint ? (
     <div className="text-center">
-      <h1 className="text-4xl mb-10">Flower Sprints</h1>
+      <Title>Flower Sprints</Title>
       <div>
         <div className="pb-10">
           {sprint.tasks.sort(compare).map((task: Task, index) => (
@@ -103,19 +105,19 @@ const App: React.FC = () => {
         </p>
         <p>{taskCountPerDay()} tasks per day</p>
         <p>{remainingDays()} days remaining</p>
-        <nav className="fixed bottom-0 inset-x-0 bg-gray-300 flex justify-between uppercase">
+        <Nav>
           <NavButton name="home" link="/" />
-        </nav>
+        </Nav>
       </div>
     </div>
   ) : (
     <div className="text-center">
-      <h1 className="text-4xl mb-10">Flower Sprints</h1>
+      <Title>Flower Sprints</Title>
       <div>Please register new sprint.</div>
-      <nav className="fixed bottom-0 inset-x-0 bg-gray-300 flex justify-between uppercase">
+      <Nav>
         <NavButton name="home" link="/" />
         <NavButton name="settings" link="/sprints/new" />
-      </nav>
+      </Nav>
     </div>
   )
 }

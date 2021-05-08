@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
+import PTR from './PTR'
 import App from './App'
 import SprintNew from './SprintNew'
 import reportWebVitals from './reportWebVitals'
@@ -11,7 +12,9 @@ ReactDOM.render(
     <Router>
       <Switch>
         <Route exact path="/">
-          <App />
+          <PTR>
+            <App />
+          </PTR>
         </Route>
         <Route exact path="/sprints/new/">
           <SprintNew />

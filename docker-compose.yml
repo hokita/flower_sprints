@@ -19,7 +19,7 @@ services:
       dockerfile: ./docker/node/Dockerfile
     volumes:
       - ./front:/usr/src/app
-      - /usr/src/app/.node_modules
+      - /usr/src/app/node_modules
     stdin_open: true
     ports:
       - "8082:3000"

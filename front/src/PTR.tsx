@@ -21,6 +21,7 @@ const PTR: React.FC<Props> = ({ children }) => {
       iconRefreshing: ReactDOMServer.renderToString(
         <FontAwesomeIcon icon={faSyncAlt} spin={true} />
       ),
+      distReload: 65,
     })
     return () => {
       PullToRefresh.destroyAll()

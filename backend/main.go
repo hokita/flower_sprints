@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-const location = "Asia/Tokyo"
+const location = "UTC"
 
 func init() {
 	loc, err := time.LoadLocation(location)

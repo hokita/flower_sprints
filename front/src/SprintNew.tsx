@@ -30,6 +30,7 @@ const SprintNew: React.FC = () => {
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    // 本来のdeadlineは9:00だがUTC時間に直すと0:00なので日付のみ送る
     const params = JSON.stringify({ count: taskCount, deadline })
     axios.post(apiURL, params).then(() => {
       setSaved(true)

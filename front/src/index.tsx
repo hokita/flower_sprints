@@ -1,5 +1,5 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import { StrictMode } from 'react'
+import { render } from 'react-dom'
 import './index.css'
 import PTR from './PTR'
 import App from './App'
@@ -7,8 +7,8 @@ import SprintNew from './SprintNew'
 import reportWebVitals from './reportWebVitals'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
-ReactDOM.render(
-  <React.StrictMode>
+render(
+  <StrictMode>
     <Router>
       <Switch>
         <Route exact path="/">
@@ -21,7 +21,7 @@ ReactDOM.render(
         </Route>
       </Switch>
     </Router>
-  </React.StrictMode>,
+  </StrictMode>,
   document.getElementById('root')
 )
 

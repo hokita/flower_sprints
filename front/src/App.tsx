@@ -4,6 +4,7 @@ import Nav from './Nav'
 import NavButton from './NavButton'
 import TaskIcon from './TaskIcon'
 import axios from 'axios'
+import LoadingIcon from './LoadingIcon'
 
 interface Sprint {
   id: number
@@ -21,30 +22,43 @@ interface Task {
   updated_at: Date
 }
 
-const App: React.FC = () => {
-  const [sprint, setSprint] = useState<Sprint>()
-  const [doneTaskCount, setDoneTaskCount] = useState(0)
-  const [isAllDone, setIsAllDone] = useState(false)
-
-  const apiURL = `http://${process.env.REACT_APP_API_DOMAIN}/`
+const useFetch = function <T>(uri: string) {
+  const [data, setData] = useState<T>()
+  const [error] = useState()
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get(apiURL)
-
-      if (result.data) {
-        const newSprint: Sprint = result.data
-        setSprint(newSprint)
-        setDoneTaskCount(newSprint.tasks.filter((task) => task.done).length)
-      }
+      const _sleep = (ms: any) =>
+        new Promise((resolve) => setTimeout(resolve, ms))
+      await _sleep(2000)
+      const result = await axios.get(uri)
+      setLoading(false)
+      console.log(result.data)
+      setData(result.data)
     }
-
     fetchData()
-  }, [apiURL])
+  }, [uri])
+
+  return {
+    data,
+    error,
+    loading,
+  }
+}
+
+const App: React.FC = () => {
+  const [sprint, setSprint] = useState<Sprint>()
+  const [doneTaskCount, setDoneTaskCount] = useState(0)
+  const [isAllDone] = useState(false)
+  const apiURL = `http://${process.env.REACT_APP_API_DOMAIN}/`
+  const { data, loading } = useFetch<Sprint>(apiURL)
 
   useEffect(() => {
-    sprint && setIsAllDone(sprint.tasks.every((task) => task.done))
-  }, [sprint, doneTaskCount])
+    data && setSprint(data)
+  }, [data])
+
+  if (loading) return <LoadingIcon />
 
   const handleClickTaskIcon = (index: number) => {
     if (!sprint) return

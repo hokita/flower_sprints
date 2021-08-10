@@ -5,6 +5,8 @@ import NavButton from './NavButton'
 import TaskIcon from './TaskIcon'
 import axios from 'axios'
 import LoadingIcon from './LoadingIcon'
+import AllDoneMessage from './AllDoneMessage'
+import { useFetch } from './hooks'
 
 interface Sprint {
   id: number
@@ -12,6 +14,7 @@ interface Sprint {
   created_at: Date
   updated_at: Date
   tasks: Task[]
+  isAllDone: () => boolean
 }
 
 interface Task {
@@ -22,35 +25,9 @@ interface Task {
   updated_at: Date
 }
 
-const useFetch = function <T>(uri: string) {
-  const [data, setData] = useState<T>()
-  const [error] = useState()
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const _sleep = (ms: any) =>
-        new Promise((resolve) => setTimeout(resolve, ms))
-      await _sleep(2000)
-      const result = await axios.get(uri)
-      setLoading(false)
-      console.log(result.data)
-      setData(result.data)
-    }
-    fetchData()
-  }, [uri])
-
-  return {
-    data,
-    error,
-    loading,
-  }
-}
-
 const App: React.FC = () => {
   const [sprint, setSprint] = useState<Sprint>()
   const [doneTaskCount, setDoneTaskCount] = useState(0)
-  const [isAllDone] = useState(false)
   const apiURL = `http://${process.env.REACT_APP_API_DOMAIN}/`
   const { data, loading } = useFetch<Sprint>(apiURL)
 
@@ -106,12 +83,6 @@ const App: React.FC = () => {
     return comparison
   }
 
-  const allDoneMessage = isAllDone ? (
-    <p className="text-gray-500 text-2xl">Well Done!!</p>
-  ) : (
-    <></>
-  )
-
   return sprint ? (
     <div className="text-center">
       <Title>Flower Sprints</Title>
@@ -124,7 +95,7 @@ const App: React.FC = () => {
               onClick={() => handleClickTaskIcon(index)}
             />
           ))}
-          {allDoneMessage}
+          <AllDoneMessage isAllDone={sprint.tasks.every((task) => task.done)} />
         </div>
         <p>
           {doneTaskCount} / {sprint.tasks.length} tasks
